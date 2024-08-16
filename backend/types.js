@@ -7,5 +7,10 @@ const signUpValidation = z.object({
   password: z.string().min(5),
 });
 
+const signInValidation = z.object({
+    userName: z.string().min(3).max(9),
+  password: z.string().min(5),
+})
 
-module.exports = signUpValidation
+
+module.exports = {signUpValidation,signInValidation}
