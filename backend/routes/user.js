@@ -3,7 +3,7 @@ const signUpValidation = require("../types");
 const { User } = require("../db");
 const router = express.Router();
 
-router.post("/signup",async (req, res) => {
+router.post("/signup", async (req, res) => {
   const { userName, firstName, lastName, password } = req.body;
   const isvalidated = signUpValidation.safeParse({
     userName,
@@ -13,7 +13,7 @@ router.post("/signup",async (req, res) => {
   });
   const isOldUser = User.findOne({ userName });
   if (isvalidated.success && isOldUser) {
-    User.create({
+    await User.create({
       userName,
       password,
       firstName,
