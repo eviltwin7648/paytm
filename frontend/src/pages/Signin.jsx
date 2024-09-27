@@ -2,28 +2,30 @@ import { BottomWarning } from "../components/ButtonWarning.jsx";
 import { Button } from "../components/Button.jsx";
 import { Heading } from "../components/Heading.jsx";
 import { InputBox } from "../components/InputBox.jsx";
-import { SubHeading } from "../components/SubHeading.jsx";
-import {  useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const Signin = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("")
-  const navigate = useNavigate()
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
   const handleSignIn = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/signin`, {
-        userName,
-        password,
-      })
-      if(res.data.token){
-          localStorage.setItem('token',res.data.token)
-          navigate("/dashboard")
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/signin`,
+        {
+          userName,
+          password,
+        }
+      );
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        navigate("/dashboard");
       }
     } catch (error) {
-      setMessage(error.response.data.message)
+      setMessage(error.response.data.message);
     }
   };
 
@@ -32,7 +34,10 @@ export const Signin = () => {
       <div className="flex flex-col justify-center">
         <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
           <Heading label={"Sign in"} />
-          <SubHeading label={"Enter your credentials to access your account"} />
+          <div className="text-slate-500 text-md pt-1 px-4 pb-4">
+            Enter your credentials to access your account
+          </div>
+
           <InputBox
             onPress={(e) => setUserName(e.target.value)}
             placeholder="username"
