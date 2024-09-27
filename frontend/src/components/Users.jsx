@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { User } from "./User";
+import { User } from "./User.jsx";
 import axios from "axios";
 
 export const Users = () => {

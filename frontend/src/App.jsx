@@ -1,9 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Signin } from "./pages/Signin";
-import { Signup } from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import { SendMoney } from "./pages/SendMoney";
-import ProtectedRoute from "./ProtectedRoute";
+import { Signin } from "./pages/Signin.jsx";
+import { Signup } from "./pages/Signup.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import { SendMoney } from "./pages/SendMoney.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
   return (
