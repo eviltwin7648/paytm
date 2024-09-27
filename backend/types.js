@@ -18,4 +18,14 @@ const updateBody = z.object({
   password: z.string().min(5).optional(),
 });
 
-module.exports = { signUpValidation, signInValidation, updateBody };
+const transferSchema = z.object({
+  userId: z.string(),
+  amount: z.number().nonnegative(),
+});
+
+module.exports = {
+  signUpValidation,
+  signInValidation,
+  updateBody,
+  transferSchema,
+};

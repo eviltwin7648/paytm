@@ -2,6 +2,7 @@ const express = require("express");
 const { Account, User } = require("../db");
 const authMiddleware = require("../middleware");
 const mongoose = require("mongoose");
+const { transferSchema } = require("../types");
 
 const router = express.Router();
 
@@ -17,10 +18,23 @@ router.post("/transfer", authMiddleware, async (req, res) => {
 
   session.startTransaction();
 
-  const { to, amount } = req.body;
+  const amount = parseInt(req.body.amount);
+
+  const { success } = transferSchema.safeParse({
+    userId: req.body.to,
+    amount: amount,
+  });
+  console.log(success);
+
+  if (!success) {
+    session.abortTransaction();
+    return res.status(400).json({
+      message: "Invalid Input",
+    });
+  }
 
   const toAccount = await Account.findOne({
-    userId: to,
+    userId: req.body.to,
   });
   if (!toAccount) {
     session.abortTransaction();
@@ -37,7 +51,10 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     });
   }
 
-  await Account.updateOne({ userId: to }, { $inc: { balance: amount } });
+  await Account.updateOne(
+    { userId: req.body.to },
+    { $inc: { balance: amount } }
+  );
   await Account.updateOne(
     { userId: req.userId },
     { $inc: { balance: -amount } }

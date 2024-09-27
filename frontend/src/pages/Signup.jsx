@@ -5,11 +5,33 @@ import { InputBox } from "../components/InputBox";
 import { SubHeading } from "../components/SubHeading";
 import { useState } from "react";
 import axois from "axios";
+import { useNavigate } from "react-router-dom";
 export const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleSingUp = async () => {
+    try {
+      const resposne = await axois.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/signup`,
+        {
+          userName,
+          password,
+          firstName,
+          lastName,
+        }
+      );
+
+      localStorage.setItem("token", resposne.data.token);
+      navigate("/dashboard");
+    } catch (error) {
+      setMessage(error.response.data.message);
+    }
+  };
 
   return (
     <div className="bg-slate-300 h-screen flex justify-center">
@@ -46,23 +68,9 @@ export const Signup = () => {
             label={"Password"}
           />
           <div className="pt-4">
-            <Button
-              onClick={async () => {
-                const resposne = await axois.post(
-                  "http://localhost:3000/api/v1/user/signup",
-                  {
-                    userName,
-                    password,
-                    firstName,
-                    lastName,
-                  }
-                );
-
-                localStorage.setItem("token", resposne.data.token);
-              }}
-              label={"Sign up"}
-            />
+            <Button onClick={handleSingUp} label={"Sign up"} />
           </div>
+          <p className="text-xs text-red-700">{message}</p>
           <BottomWarning
             label={"Already have an account?"}
             buttonText={"Sign in"}

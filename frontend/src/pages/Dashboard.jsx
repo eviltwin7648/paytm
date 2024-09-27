@@ -7,7 +7,7 @@ import axios from "axios";
 const Dashboard = () => {
   const [value, setValue] = useState(0)
   useEffect(()=>{
-      axios.get('http://localhost:3000/api/v1/account/balance',{
+      axios.get(`${import.meta.env.VITE_API_URL}/api/v1/account/balance`,{
         headers: {
           authorization: `Bearer ${localStorage.getItem("token")}`,
         },

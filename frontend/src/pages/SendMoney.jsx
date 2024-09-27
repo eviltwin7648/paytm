@@ -44,7 +44,7 @@ export const SendMoney = () => {
               <button
                 onClick={async() => {
                  await axios.post(
-                    `http://localhost:3000/api/v1/account/transfer`,
+                    `${import.meta.env.VITE_API_URL}/api/v1/account/transfer`,
                     {
                       to: id,
                       amount: amount,

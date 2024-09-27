@@ -2,28 +2,40 @@ const express = require("express");
 const { signUpValidation, signInValidation, updateBody } = require("../types");
 const jwt = require("jsonwebtoken");
 const { User, Account } = require("../db");
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 const authMiddleware = require("../middleware");
 const router = express.Router();
 
 router.post("/signup", async (req, res) => {
-  const { userName, firstName, lastName, password } = req.body;
-  const { success } = signUpValidation.safeParse({
-    userName,
-    password,
-    firstName,
-    lastName,
-  });
-  const existingUser = await User.findOne({ userName });
-  console.log(existingUser)
-  //if validation succeeds and the user is a new user
-  if (success && !existingUser) {
+  try {
+    const { userName, firstName, lastName, password } = req.body;
+    const { success } = signUpValidation.safeParse({
+      userName,
+      password,
+      firstName,
+      lastName,
+    });
+
+    const existingUser = await User.findOne({ userName });
+    //if validation succeeds and the user is a new user
+    if (!success) {
+      return res.status(400).send({
+        message: "Incorrect Inputs",
+      });
+    }
+    if (existingUser) {
+      return res.status(404).send({
+        message: "An account with this username exists",
+      });
+    }
+
     const user = await User.create({
       userName,
       password,
       firstName,
       lastName,
     });
+
     const userId = user._id;
     // create an account  with random balance
 
@@ -38,10 +50,8 @@ router.post("/signup", async (req, res) => {
       message: "User created successfully",
       token: token,
     });
-  } else {
-    return res.status(411).send({
-      msg: "An account with this username exists / Incorrect Inputs",
-    });
+  } catch (err) {
+    return res.status(500).send({ msg: "Internal Server Error" });
   }
 });
 
@@ -50,14 +60,14 @@ router.post("/signin", async (req, res) => {
   const { success } = signInValidation.safeParse(req.body);
 
   if (!success) {
-    return res.status(411).json({
-      message: "Error while logging in",
+    return res.status(400).json({
+      message: "Wrong Inputs",
     });
   }
   const user = await User.findOne({ userName: userName, password: password });
   if (!user) {
-    return res.status(411).json({
-      message: "Error while logging in",
+    return res.status(404).json({
+      message: "No Such User",
     });
   }
 
@@ -93,8 +103,8 @@ router.put("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/bulk/", authMiddleware, async (req, res) => {
-  const filter = req.query.filter || " ";
+router.get("/bulk", authMiddleware, async (req, res) => {
+  const filter = req.query.filter || "";
   const users = await User.find({
     $or: [
       {
@@ -111,7 +121,7 @@ router.get("/bulk/", authMiddleware, async (req, res) => {
       },
     ],
   });
-  await res.send({
+res.send({
     Users: users.map((user) => ({
       username: user.username,
       firstName: user.firstName,
