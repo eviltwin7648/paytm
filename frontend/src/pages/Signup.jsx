@@ -5,7 +5,6 @@ import { InputBox } from "../components/InputBox.jsx";
 import { useState } from "react";
 import axois from "axios";
 import { useNavigate } from "react-router-dom";
-import { SubHeading } from "../components/SubHeading.jsx";
 export const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -38,7 +37,8 @@ export const Signup = () => {
       <div className="flex flex-col justify-center">
         <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
           <Heading label={"Sign up"} />
-          <SubHeading label={"Enter your infromation to create an account"} />
+          <div className="text-slate-500 text-md pt-1 px-4 pb-4">Enter your infromation to create an account</div>
+         
           <InputBox
             onPress={(e) => {
               setFirstName(e.target.value);
